@@ -24,11 +24,13 @@ function register(name, obj) {
             addWatcher.call(this, this.data[name], obj, key);
         }
     }
+
+    this.update();
 }
 
 // TODO: do something
 function update(data, prop) {
-    console.log(data, prop);
+    this.dispatch('state-update', { data, prop })
 }
 
 // TODO: handle arrays/objects
