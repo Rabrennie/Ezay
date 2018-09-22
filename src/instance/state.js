@@ -30,7 +30,6 @@ function register(name, obj) {
     this.update();
 }
 
-// TODO: do something
 function update(data, prop) {
     this.dispatch('state-update', { data, prop })
 }
