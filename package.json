@@ -18,7 +18,8 @@
     "jest": "^23.6.0",
     "regenerator-runtime": "^0.12.1",
     "rollup": "^0.66.2",
-    "rollup-plugin-babel": "^4.0.3"
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-uglify": "^6.0.0"
   },
   "jest": {
     "resetModules": true,
