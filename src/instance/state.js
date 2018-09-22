@@ -1,5 +1,6 @@
 function stateMixin(Ezay) {
     Ezay.prototype.data = Object.create({});
+    Ezay.prototype.models = Object.create({});
     Ezay.prototype.register = register;
     Ezay.prototype.update = update;
 }
@@ -9,6 +10,7 @@ function register(name, obj) {
         throw "Model " + name + " already registered."
     }
 
+    this.models[name] = obj;
     this.data[name] = Object.create(null);
 
     Object.defineProperty(obj, '$add', {

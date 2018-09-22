@@ -1,3 +1,5 @@
+import { initRender } from './render.js'
+
 function initMixin(Ezay) {
     Ezay.options = Object.create({});
     Ezay.registerOption = registerOption;
@@ -29,6 +31,8 @@ function init(options) {
             }
         }
     }
+
+    initRender(this);
 }
 
 function registerOption(name, options) {

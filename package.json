@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "node node_modules/rollup/bin/rollup -c",
+    "watch": "node node_modules/rollup/bin/rollup -c -w",
     "test": "cross-env NODE_ENV=testing jest"
   },
   "author": "",
