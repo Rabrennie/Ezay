@@ -1,13 +1,13 @@
-import initInit from './init.js'
-import initState from './state.js'
-import initRender from './render.js'
+import initMixin from './init.js'
+import stateMixin from './state.js'
+import renderMixin from './render.js'
 
 function Ezay(options) {
     this._init(options);
 }
 
-initInit(Ezay);
-initState(Ezay);
-initRender(Ezay);
+initMixin(Ezay);
+stateMixin(Ezay);
+renderMixin(Ezay);
 
 export default Ezay;

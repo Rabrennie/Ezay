@@ -1,4 +1,4 @@
-function initInit(Ezay) {
+function initMixin(Ezay) {
     Ezay.options = Object.create({});
     Ezay.registerOption = registerOption;
     Ezay.prototype._init = init;
@@ -38,4 +38,4 @@ function registerOption(name, options) {
 }
 
 
-export default initInit;
+export default initMixin;

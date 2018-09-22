@@ -1,14 +1,14 @@
-import initInit from '../../src/instance/init.js';
+import initMixin from '../../src/instance/init.js';
 
-test('initInit adds _init to prototype', () => {
+test('initMixin adds _init to prototype', () => {
     var testFunc = function () { };
-    initInit(testFunc);
+    initMixin(testFunc);
     expect(testFunc.prototype._init).toBeDefined();
 });
 
-test('initInit adds registerOption', () => {
+test('initMixin adds registerOption', () => {
     var testFunc = function () { };
-    initInit(testFunc);
+    initMixin(testFunc);
     expect(testFunc.registerOption).toBeDefined();
 });
 
@@ -16,7 +16,7 @@ describe('registerOption', () => {
     let Ezay = function() {};
 
     beforeEach(() => {
-        initInit(Ezay);
+        initMixin(Ezay);
     });
 
     test('registerOption adds new option', () => {

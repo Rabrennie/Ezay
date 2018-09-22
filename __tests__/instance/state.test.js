@@ -1,20 +1,20 @@
-import initState from '../../src/instance/state.js';
+import stateMixin from '../../src/instance/state.js';
 
-test('initState adds data to prototype', () => {
+test('stateMixin adds data to prototype', () => {
     var testFunc = function () { };
-    initState(testFunc);
+    stateMixin(testFunc);
     expect(testFunc.prototype.data).toBeDefined();
 });
 
-test('initState adds register to prototype', () => {
+test('stateMixin adds register to prototype', () => {
     var testFunc = function () { };
-    initState(testFunc);
+    stateMixin(testFunc);
     expect(testFunc.prototype.register).toBeDefined();
 });
 
-test('initState adds update to prototype', () => {
+test('stateMixin adds update to prototype', () => {
     var testFunc = function () { };
-    initState(testFunc);
+    stateMixin(testFunc);
     expect(testFunc.prototype.update).toBeDefined();
 });
 
@@ -24,7 +24,7 @@ describe('register', () => {
     let ezay;
 
     beforeEach(() => {
-        initState(Ezay);
+        stateMixin(Ezay);
         ezay = new Ezay();
     });
 

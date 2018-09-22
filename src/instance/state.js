@@ -1,4 +1,4 @@
-function initState(Ezay) {
+function stateMixin(Ezay) {
     Ezay.prototype.data = Object.create({});
     Ezay.prototype.register = register;
     Ezay.prototype.update = update;
@@ -47,4 +47,4 @@ function addWatcher(data, obj, prop, val) {
     });
 }
 
-export default initState;
+export default stateMixin;

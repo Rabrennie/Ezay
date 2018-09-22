@@ -1,9 +1,11 @@
-function initRender(Ezay) {
+function renderMixin(Ezay) {
 
     Ezay.registerOption('el', {
         'required': true
     });
 
+
+
 }
 
-export default initRender;
+export default renderMixin;
