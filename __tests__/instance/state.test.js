@@ -20,7 +20,7 @@ test('stateMixin adds update to prototype', () => {
 
 describe('register', () => {
 
-    let Ezay = function() {};
+    let Ezay = function() { this.update = () => {}};
     let ezay;
 
     beforeEach(() => {
