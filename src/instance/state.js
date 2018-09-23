@@ -8,6 +8,8 @@ function stateMixin(Ezay) {
 }
 
 function register(name, obj) {
+    name = name.toLowerCase();
+
     if (this.models[name] !== undefined) {
         throw "Model " + name + " already registered."
     }
@@ -20,8 +22,9 @@ function register(name, obj) {
     this.update();
 }
 
-function registerContext(name, modelName, obj) {
+function registerContext(name, modelName) {
 
+    const obj = Object.assign({}, this.models[modelName]);
     this.contextModels[modelName][name] = obj;
     this.data[modelName][name] = Object.create(null);
 
@@ -70,12 +73,13 @@ function overrideArray(data, prop) {
     var _this = this;
 
     var arrayPrototype = Object.getOwnPropertyNames(Array.prototype);
-    for (var funcKey in arrayPrototype) {
-        if (typeof Array.prototype[arrayPrototype[funcKey]] == 'function') {
-            data[prop][arrayPrototype[funcKey]] = (function(func, data, prop) {return function () {
-                Array.prototype[func].apply(data[prop], arguments);
+    for (var index in arrayPrototype) {
+        const funcName = arrayPrototype[index];
+        if (typeof Array.prototype[funcName] == 'function') {
+            data[prop][funcName] = (function(funcName, data, prop) {return function () {
+                Array.prototype[funcName].apply(data[prop], arguments);
                 _this.update(data, prop);
-            }})(arrayPrototype[funcKey], data, prop)
+            }})(funcName, data, prop)
         }
     }
 

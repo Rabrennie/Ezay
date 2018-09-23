@@ -33,14 +33,14 @@ function createElement(ezay, node) {
 
     const el = {
         'type': node.nodeName,
-        'props': fetchAttributes(node),
+        'props': getAttributes(node),
         'children': children
     };
 
     return el;
 }
 
-function fetchAttributes(node) {
+function getAttributes(node) {
     
     if(node.nodeName == '#text') {
         return {
@@ -50,10 +50,10 @@ function fetchAttributes(node) {
 
     node.setAttribute('data-ezay-id', uid());
 
-    return node && Array.prototype.reduce.call(node.attributes, function (list, attribute) {
-        list[attribute.name] = attribute.value;
-        return list;
-    }, {}) || {};
+    return Array.prototype.reduce.call(node.attributes, function (acc, cur) {
+        acc[cur.name] = cur.value;
+        return acc;
+    }, {});
 };
 
 function uid() {
@@ -69,19 +69,22 @@ function onStateUpdate(obj) {
 
 // TODO: implement a better virtual dom ( only update changed nodes etc. )
 // TODO: handle external changes to dom
-function renderEl(el, context, modelName) {
-    if(el.type === '#text') {
+function renderEl(el, context) {
+    const ezayId = el.props['data-ezay-id'];
+    const type = el.type.toLowerCase();
+
+    if(type === '#text') {
         return createTextNode(el, context)
     }
 
-    if(this.models[el.type.toLowerCase()] !== undefined) {
-        if(this.data[el.type.toLowerCase()][el.props['data-ezay-id']] === undefined) {
-            this.registerContext(el.props['data-ezay-id'], el.type.toLowerCase(), Object.assign({}, this.models[el.type.toLowerCase()] ));
+    if(this.models[type] !== undefined) {
+        if(this.data[type][ezayId] === undefined) {
+            this.registerContext(ezayId, type);
         }
-        context = this.contextModels[el.type.toLowerCase()][el.props['data-ezay-id']];
+        context = this.contextModels[type][ezayId];
     }
 
-    const vnode = document.createElement(el.type)
+    const vnode = document.createElement(type)
 
     for (const key in el.props) {
         if (el.props.hasOwnProperty(key)) {
@@ -93,20 +96,7 @@ function renderEl(el, context, modelName) {
             }
 
             if(key == "ezay:for") {
-                const something = prop.split(' in ');
-
-                const data = context[something[1]];
-                
-                for (let i = 0; i < data.length; i++) {
-                    const element = data[i];                    
-                    for (let j = 0; j < el.children.length; j++) {
-                        const child = el.children[j];
-                        const thiscontext = {}
-                        thiscontext[something[0]] = element;
-                        vnode.appendChild(renderEl.call(this, child, thiscontext))
-                    }
-                }
-
+                renderList.call(this, prop, context, el, vnode);
                 return vnode;
             }
         }
@@ -119,6 +109,20 @@ function renderEl(el, context, modelName) {
 
     return vnode;
 };
+
+function renderList(prop, context, el, vnode) {
+    const args = prop.split(' in ');
+    const data = context[args[1]];
+    for (let i = 0; i < data.length; i++) {
+        const contextData = data[i];
+        for (let j = 0; j < el.children.length; j++) {
+            const child = el.children[j];
+            const childContext = {};
+            childContext[args[0]] = contextData;
+            vnode.appendChild(renderEl.call(this, child, childContext));
+        }
+    }
+}
 
 function createTextNode(el, context) {
     var re = /{{\s*([a-zA-Z0-9]+)\s*}}/g
