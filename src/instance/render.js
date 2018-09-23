@@ -18,24 +18,26 @@ export function initRender(ezay) {
         throw "Could not bind to element";
     }
 
-    ezay.dom = createElement(el);
+    ezay.dom = createElement(ezay, el);
 
     ezay.on('state-update', onStateUpdate.bind(ezay));
 }
 
-function createElement(node) {
+function createElement(ezay, node) {
 
     const children = [];
     for (let i = 0; i < node.childNodes.length; i++) {
         const n = node.childNodes[i];
-        children.push(createElement(n))
+        children.push(createElement(ezay, n))
     }
 
-    return {
+    const el = {
         'type': node.nodeName,
         'props': fetchAttributes(node),
         'children': children
     };
+
+    return el;
 }
 
 function fetchAttributes(node) {
@@ -72,9 +74,11 @@ function renderEl(el, context, modelName) {
         return createTextNode(el, context)
     }
 
-    if(this.data.hasOwnProperty(el.type.toLowerCase())) {
-        context = this.data[el.type.toLowerCase()];
-        modelName = el.type.toLowerCase();
+    if(this.models[el.type.toLowerCase()] !== undefined) {
+        if(this.data[el.type.toLowerCase()][el.props['data-ezay-id']] === undefined) {
+            this.registerContext(el.props['data-ezay-id'], el.type.toLowerCase(), Object.assign({}, this.models[el.type.toLowerCase()] ));
+        }
+        context = this.contextModels[el.type.toLowerCase()][el.props['data-ezay-id']];
     }
 
     const vnode = document.createElement(el.type)
@@ -85,14 +89,14 @@ function renderEl(el, context, modelName) {
             vnode.setAttribute(key, prop);
 
             if(key == "ezay:click") {
-                vnode.addEventListener('click', () => context[prop].call(this.models[modelName]));
+                vnode.addEventListener('click', () => context[prop].call(context));
             }
         }
     }
 
     for (let i = 0; i < el.children.length; i++) {
         const child = el.children[i];
-        vnode.appendChild(renderEl.call(this, child, context, modelName));
+        vnode.appendChild(renderEl.call(this, child, context));
     }
 
     return vnode;
