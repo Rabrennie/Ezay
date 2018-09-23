@@ -8,10 +8,11 @@
 <div id="app">
     <my-el>
         {{ test }}
-        <button ezay:click="clickHandler">
-            {{ test }}
-        </button>
-
+        <button ezay:click="clickHandler">+1</button>
+    </my-el>
+    <my-el>
+        {{ test }}
+        <button ezay:click="clickHandler">+1</button>
     </my-el>
 </div>
 
@@ -21,14 +22,12 @@
 
     var ezay = new Ezay({ el: '#app' });
 
-    var myEl = {
+    ezay.register('my-el', {
         'test': 1234,
         'clickHandler': function () {
             this.test += 1;
         }
-    };
-
-    ezay.register('my-el', myEl);
+    });
 
 </script>
 ```
