@@ -28,26 +28,10 @@ describe('register', () => {
         ezay = new Ezay();
     });
 
-    test('register adds object to data', () => {
+    test('register adds object to models', () => {
         ezay.register('test', { 'test': 123 });
 
-        expect(ezay.data).toHaveProperty('test');
-        expect(ezay.data.test).toEqual({ 'test': 123 });
-    });
-
-    test('register adds setter and getter for properties', () => {
-        var obj = { 'test': 123 };
-        ezay.register('test', obj);
-
-        expect(obj).toHaveProperty('test');
-        expect(Object.getOwnPropertyDescriptor(obj, 'test')).toHaveProperty('get');
-        expect(Object.getOwnPropertyDescriptor(obj, 'test')).toHaveProperty('set');
-    });
-
-    test('register adds $add function to object', () => {
-        var obj = { 'test': 123 };
-        ezay.register('test', obj);
-
-        expect(obj).toHaveProperty('$add');
+        expect(ezay.models).toHaveProperty('test');
+        expect(ezay.models.test).toEqual({ 'test': 123 });
     });
 })

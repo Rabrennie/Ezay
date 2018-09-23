@@ -91,6 +91,24 @@ function renderEl(el, context, modelName) {
             if(key == "ezay:click") {
                 vnode.addEventListener('click', () => context[prop].call(context));
             }
+
+            if(key == "ezay:for") {
+                const something = prop.split(' in ');
+
+                const data = context[something[1]];
+                
+                for (let i = 0; i < data.length; i++) {
+                    const element = data[i];                    
+                    for (let j = 0; j < el.children.length; j++) {
+                        const child = el.children[j];
+                        const thiscontext = {}
+                        thiscontext[something[0]] = element;
+                        vnode.appendChild(renderEl.call(this, child, thiscontext))
+                    }
+                }
+
+                return vnode;
+            }
         }
     }
 

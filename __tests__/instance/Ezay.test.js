@@ -1,5 +1,11 @@
 import Ezay from '../../src/instance/index.js';
 
+beforeEach(() => {
+    const div = document.createElement('div');
+    div.id = 'test';
+    document.body.appendChild(div);
+});
+
 test('construct throws if option is required', () => {
     Ezay.registerOption('test', { 'required': true });
 
