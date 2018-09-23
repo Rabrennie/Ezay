@@ -92,7 +92,7 @@ function renderEl(el, context) {
             vnode.setAttribute(key, prop);
 
             if(key == "ezay:click") {
-                vnode.addEventListener('click', () => context[prop].call(context));
+               vnode.addEventListener('click', () => context[prop].call(context));
             }
 
             if(key == "ezay:for") {
@@ -113,6 +113,11 @@ function renderEl(el, context) {
 function renderList(prop, context, el, vnode) {
     const args = prop.split(' in ');
     const data = context[args[1]];
+
+    if(data === undefined) {
+        return;
+    }
+    
     for (let i = 0; i < data.length; i++) {
         const contextData = data[i];
         for (let j = 0; j < el.children.length; j++) {
@@ -130,7 +135,7 @@ function createTextNode(el, context) {
     var res;
     while(res = re.exec(text)) {
         var data = ''; 
-        if(context[res[1]] !== null) {
+        if(context[res[1]] != null) {
             data = context[res[1]];
         }
         text = text.replace(res[0], data);

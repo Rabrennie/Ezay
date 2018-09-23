@@ -23,8 +23,7 @@ function register(name, obj) {
 }
 
 function registerContext(name, modelName) {
-
-    const obj = Object.assign({}, this.models[modelName]);
+    const obj = copy(this.models[modelName]);
     this.contextModels[modelName][name] = obj;
     this.data[modelName][name] = Object.create(null);
 
@@ -33,6 +32,7 @@ function registerContext(name, modelName) {
         enumerable: false,
         value: function (prop, val) {
             addWatcher.call(this, this.data[modelName][name], obj, prop, val);
+            this.update(this.data[modelName][name], prop);
         }.bind(this)
     });
 
@@ -45,6 +45,18 @@ function registerContext(name, modelName) {
     this.update();
 }
 
+
+function copy(obj) {
+    let out, v, key;
+    out = Array.isArray(obj) ? [] : {};
+    for (key in obj) {
+        v = obj[key];
+        out[key] = (typeof v === "object" && v !== null) ? copy(v) : v;
+    }
+    return out;
+ }
+
+ 
 function update(data, prop) {
     this.dispatch('state-update', { data, prop })
 }
@@ -55,12 +67,16 @@ function addWatcher(data, obj, prop, val) {
 
     if (val !== undefined) {
         data[prop] = val
+        if (obj[prop] !== undefined && !obj[prop].configurable) {
+            return;
+        }
     } else {
         data[prop] = obj[prop];
     }
 
-    if (Array.isArray(data[prop])) {
-        overrideArray.call(this, data, prop);
+    if(Array.isArray(data[prop])) {
+        extendArray.call(this, data, prop);
+        
     }
 
     Object.defineProperty(obj, prop, {
@@ -69,18 +85,28 @@ function addWatcher(data, obj, prop, val) {
     });
 }
 
-function overrideArray(data, prop) {
-    var _this = this;
-
-    var arrayPrototype = Object.getOwnPropertyNames(Array.prototype);
-    for (var index in arrayPrototype) {
-        const funcName = arrayPrototype[index];
-        if (typeof Array.prototype[funcName] == 'function') {
-            data[prop][funcName] = (function(funcName, data, prop) {return function () {
-                Array.prototype[funcName].apply(data[prop], arguments);
-                _this.update(data, prop);
-            }})(funcName, data, prop)
-        }
+function extendArray(data, prop) {
+    const _this = this;
+    const funcNames = [
+        "reverse",
+        "sort",
+        "push",
+        "pop",
+        "shift",
+        "unshift",
+        "splice",
+        "concat",
+        "slice",
+        "copyWithin",
+        "fill"
+    ]
+    for (let i = 0; i < funcNames.length; i++) {
+        const funcName = funcNames[i];
+        data[prop][funcName] = function() {
+            Array.prototype[funcName].apply(data[prop], arguments);
+            _this.update(data, prop);
+            return data[prop].length;
+        };
     }
 
 }

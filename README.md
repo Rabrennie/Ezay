@@ -7,12 +7,11 @@
 ```html
 <div id="app">
     <my-el>
-        {{ test }}
+        {{ count }}
         <button ezay:click="clickHandler">+1</button>
-    </my-el>
-    <my-el>
-        {{ test }}
-        <button ezay:click="clickHandler">+1</button>
+        <ul ezay:for="num in array">
+            <li>{{ num }}</li>
+        </ul>
     </my-el>
 </div>
 
@@ -23,10 +22,12 @@
     var ezay = new Ezay({ el: '#app' });
 
     ezay.register('my-el', {
-        'test': 1234,
+        'count': 1,
+        'array': [1],
         'clickHandler': function () {
-            this.test += 1;
-        }
+            this.count += 1;
+            this.array.push(this.count);
+        },
     });
 
 </script>
