@@ -1,13 +1,14 @@
 function stateMixin(Ezay) {
     Ezay.prototype.data = Object.create({});
     Ezay.prototype.models = Object.create({});
+    Ezay.prototype.templates = Object.create({});
     Ezay.prototype.contextModels = Object.create({});
     Ezay.prototype.register = register;
     Ezay.prototype.registerContext = registerContext;
     Ezay.prototype.update = update;
 }
 
-function register(name, obj) {
+function register(name, obj, template) {
     name = name.toLowerCase();
 
     if (this.models[name] !== undefined) {
@@ -18,6 +19,13 @@ function register(name, obj) {
 
     this.contextModels[name] = Object.create({});
     this.data[name] = Object.create({});
+    
+    if(template !== undefined) {
+        this.templates[name] = template.cloneNode(true);
+        if(template.parentNode) {
+            template.parentNode.removeChild(template);
+        }
+    }
 
     this.update();
 }

@@ -6,13 +6,16 @@
 
 ```html
 <div id="app">
-    <my-el>
-        {{ count }}
-        <button ezay:click="clickHandler">+1</button>
-        <ul ezay:for="num in array">
-            <li>{{ num }}</li>
-        </ul>
-    </my-el>
+    <my-el></my-el>
+    <my-el></my-el>
+</div>
+
+<div id="my-el-template">
+    {{ count }}
+    <button ezay:click="clickHandler">+1</button>
+    <ul ezay:for="num in array">
+        <li>{{ num }}</li>
+    </ul>
 </div>
 
 <script src="dist/ezay.min.js"></script>
@@ -28,7 +31,7 @@
             this.count += 1;
             this.array.push(this.count);
         },
-    });
+    }, document.querySelector('#my-el-template'));
 
 </script>
 ```

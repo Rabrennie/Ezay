@@ -26,6 +26,7 @@ export function initRender(ezay) {
 function createElement(ezay, node) {
 
     const children = [];
+
     for (let i = 0; i < node.childNodes.length; i++) {
         const n = node.childNodes[i];
         children.push(createElement(ezay, n))
@@ -41,8 +42,8 @@ function createElement(ezay, node) {
 }
 
 function getAttributes(node) {
-    
-    if(node.nodeName == '#text') {
+
+    if (node.nodeName == '#text') {
         return {
             textContent: node.textContent
         };
@@ -63,7 +64,7 @@ function uid() {
 function onStateUpdate(obj) {
     const vnode = renderEl.call(this, this.dom, {}, '');
     const node = document.querySelector(`[data-ezay-id=${this.dom.props['data-ezay-id']}]`);
-    
+
     node.parentNode.replaceChild(vnode, node);
 };
 
@@ -73,14 +74,24 @@ function renderEl(el, context) {
     const ezayId = el.props['data-ezay-id'];
     const type = el.type.toLowerCase();
 
-    if(type === '#text') {
+    if (type === '#text') {
         return createTextNode(el, context)
     }
 
-    if(this.models[type] !== undefined) {
-        if(this.data[type][ezayId] === undefined) {
+    if (this.models[type] !== undefined) {
+        if (this.data[type][ezayId] === undefined) {
             this.registerContext(ezayId, type);
         }
+
+        if (!el.children.length && ezay.templates[type]) {
+            const childNodes = ezay.templates[type].childNodes;
+            for (let i = 0; i < childNodes.length; i++) {
+                const n = childNodes[i];
+                el.children.push(createElement(ezay, n))
+
+            }
+        }
+
         context = this.contextModels[type][ezayId];
     }
 
@@ -91,11 +102,11 @@ function renderEl(el, context) {
             const prop = el.props[key];
             vnode.setAttribute(key, prop);
 
-            if(key == "ezay:click") {
-               vnode.addEventListener('click', () => context[prop].call(context));
+            if (key == "ezay:click") {
+                vnode.addEventListener('click', () => context[prop].call(context));
             }
 
-            if(key == "ezay:for") {
+            if (key == "ezay:for") {
                 renderList.call(this, prop, context, el, vnode);
                 return vnode;
             }
@@ -114,10 +125,10 @@ function renderList(prop, context, el, vnode) {
     const args = prop.split(' in ');
     const data = context[args[1]];
 
-    if(data === undefined) {
+    if (data === undefined) {
         return;
     }
-    
+
     for (let i = 0; i < data.length; i++) {
         const contextData = data[i];
         for (let j = 0; j < el.children.length; j++) {
@@ -133,9 +144,9 @@ function createTextNode(el, context) {
     var re = /{{\s*([a-zA-Z0-9]+)\s*}}/g
     var text = el.props.textContent;
     var res;
-    while(res = re.exec(text)) {
-        var data = ''; 
-        if(context[res[1]] != null) {
+    while (res = re.exec(text)) {
+        var data = '';
+        if (context[res[1]] != null) {
             data = context[res[1]];
         }
         text = text.replace(res[0], data);
